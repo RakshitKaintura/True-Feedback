@@ -14,13 +14,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/use-toast';
 import { signInSchema } from '@/schemas/signInSchema';
 
 export default function SignInForm() {
-  const router = useRouter();
-
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -35,7 +32,7 @@ export default function SignInForm() {
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     try {
       const result = await signIn('credentials', {
-        redirect: false,
+        redirectTo: '/dashboard',
         identifier: data.identifier,
         password: data.password,
       });
@@ -51,18 +48,6 @@ export default function SignInForm() {
         });
         return;
       }
-
-      if (result?.ok) {
-        router.replace('/dashboard');
-        router.refresh();
-        return;
-      }
-
-      toast({
-        title: 'Login Failed',
-        description: 'Unable to sign in. Please try again.',
-        variant: 'destructive',
-      });
     } catch {
       toast({
         title: 'Login Failed',
