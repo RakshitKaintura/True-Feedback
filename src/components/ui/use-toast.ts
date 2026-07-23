@@ -52,13 +52,14 @@ export function toast({ duration = 5000, ...input }: ToastInput) {
 }
 
 export function useToast() {
-  const [toasts, setToasts] = React.useState<ToastProps[]>([]);
+  const [toasts, setToasts] = React.useState<ToastProps[]>(() =>
+    Array.from(toastStore.values())
+  );
 
   React.useEffect(() => {
     const listener: ToastStoreListener = (nextToasts) => setToasts(nextToasts);
 
     listeners.add(listener);
-    setToasts(Array.from(toastStore.values()));
 
     return () => {
       listeners.delete(listener);

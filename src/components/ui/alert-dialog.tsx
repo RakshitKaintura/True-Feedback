@@ -45,14 +45,18 @@ const AlertDialogTrigger = React.forwardRef<
   const { setOpen } = useAlertDialogContext();
 
   if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement<any>, {
+    const child =
+      children as React.ReactElement<React.ButtonHTMLAttributes<HTMLButtonElement>>;
+
+    return React.cloneElement(child, {
       ref,
-      onClick: (event: React.MouseEvent) => {
-        (children.props as { onClick?: (event: React.MouseEvent) => void }).onClick?.(event as any);
-        onClick?.(event as any);
+      onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+        child.props.onClick?.(event);
+        onClick?.(event);
         setOpen(true);
       },
-    } as any);
+    } as React.ButtonHTMLAttributes<HTMLButtonElement> &
+      React.RefAttributes<HTMLButtonElement>);
   }
 
   return (

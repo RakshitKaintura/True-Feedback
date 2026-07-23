@@ -14,13 +14,15 @@ export const authOptions: NextAuthConfig = {
         identifier: { label: 'Email/Username', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials: any): Promise<any> {
+      async authorize(credentials) {
         await dbConnect();
         try {
+          const identifier = String(credentials?.identifier ?? '');
+          const password = String(credentials?.password ?? '');
           const user = await UserModel.findOne({
             $or: [
-              { email: credentials.identifier },
-              { username: credentials.identifier },
+              { email: identifier },
+              { username: identifier },
             ],
           });
           if (!user) {
@@ -30,16 +32,23 @@ export const authOptions: NextAuthConfig = {
             throw new Error('Please verify your account before logging in');
           }
           const isPasswordCorrect = await bcrypt.compare(
-            credentials.password,
+            password,
             user.password
           );
           if (isPasswordCorrect) {
-            return user;
-          } else {
-            throw new Error('Incorrect password');
+            return {
+              id: user._id.toString(),
+              _id: user._id.toString(),
+              email: user.email,
+              isVerified: user.isVerified,
+              isAcceptingMessages: user.isAcceptingMessages,
+              username: user.username,
+            };
           }
-        } catch (err: any) {
-          throw new Error(err);
+
+          throw new Error('Incorrect password');
+        } catch (err) {
+          throw err instanceof Error ? err : new Error('Authentication failed');
         }
       },
     }),
