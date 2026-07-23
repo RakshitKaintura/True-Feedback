@@ -32,6 +32,7 @@ export default function SignInForm() {
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     try {
       const result = await signIn('credentials', {
+        redirect: false,
         redirectTo: '/dashboard',
         identifier: data.identifier,
         password: data.password,
@@ -48,6 +49,17 @@ export default function SignInForm() {
         });
         return;
       }
+
+      if (result?.ok) {
+        window.location.assign('/dashboard');
+        return;
+      }
+
+      toast({
+        title: 'Login Failed',
+        description: 'Unable to sign in. Please try again.',
+        variant: 'destructive',
+      });
     } catch {
       toast({
         title: 'Login Failed',
