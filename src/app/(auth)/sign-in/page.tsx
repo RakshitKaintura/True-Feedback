@@ -50,16 +50,7 @@ export default function SignInForm() {
         return;
       }
 
-      if (result?.ok) {
-        window.location.assign('/dashboard');
-        return;
-      }
-
-      toast({
-        title: 'Login Failed',
-        description: 'Unable to sign in. Please try again.',
-        variant: 'destructive',
-      });
+      window.location.assign('/dashboard');
     } catch {
       toast({
         title: 'Login Failed',
