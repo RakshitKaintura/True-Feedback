@@ -82,8 +82,7 @@ export default function SendMessage() {
   };
 
   // ── Typewriter speed control ─────────────────────────────────────────────
-  // Milliseconds between each character being revealed.
-  // Lower = faster  |  Higher = slower  (e.g. 5 is fast, 50 is slow)
+
   const TYPEWRITER_SPEED = 18;
   const fullBufferRef = useRef(''); // holds the complete streamed text
 

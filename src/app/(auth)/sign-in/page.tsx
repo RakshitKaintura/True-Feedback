@@ -30,31 +30,45 @@ export default function SignInForm() {
   });
 
   const { toast } = useToast();
-  const onSubmit = async (data: z.infer<typeof signInSchema>) => {
-    const result = await signIn('credentials', {
-      redirect: false,
-      identifier: data.identifier,
-      password: data.password,
-    });
+  const isSubmitting = form.formState.isSubmitting;
 
-    if (result?.error) {
-      if (result.error === 'CredentialsSignin') {
+  const onSubmit = async (data: z.infer<typeof signInSchema>) => {
+    try {
+      const result = await signIn('credentials', {
+        redirect: false,
+        identifier: data.identifier,
+        password: data.password,
+      });
+
+      if (result?.error) {
         toast({
           title: 'Login Failed',
-          description: 'Incorrect username or password',
+          description:
+            result.error === 'CredentialsSignin'
+              ? 'Incorrect username or password'
+              : result.error,
           variant: 'destructive',
         });
-      } else {
-        toast({
-          title: 'Error',
-          description: result.error,
-          variant: 'destructive',
-        });
+        return;
       }
-    }
 
-    if (result?.url) {
-      router.replace('/dashboard');
+      if (result?.ok) {
+        router.replace('/dashboard');
+        router.refresh();
+        return;
+      }
+
+      toast({
+        title: 'Login Failed',
+        description: 'Unable to sign in. Please try again.',
+        variant: 'destructive',
+      });
+    } catch {
+      toast({
+        title: 'Login Failed',
+        description: 'Unable to connect to the sign-in service.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -91,7 +105,9 @@ export default function SignInForm() {
                 </FormItem>
               )}
             />
-            <Button className='w-full' type="submit">Sign In</Button>
+            <Button className="w-full" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Signing in...' : 'Sign In'}
+            </Button>
           </form>
         </Form>
         <div className="text-center mt-4">
