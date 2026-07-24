@@ -14,9 +14,7 @@ export async function POST(req: Request) {
       prompt,
     });
 
-    return new Response(result.textStream, {
-      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
-    });
+    return result.toTextStreamResponse();
   } catch (error) {
     console.error('An unexpected error occurred:', error);
     return NextResponse.json(
