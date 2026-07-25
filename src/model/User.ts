@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface Message extends Document {
   content: string;
+  projectId?: mongoose.Types.ObjectId;
   createdAt: Date;
 }
 
@@ -10,11 +11,29 @@ const MessageSchema: Schema<Message> = new mongoose.Schema({
     type: String,
     required: true,
   },
+  projectId: {
+    type: Schema.Types.ObjectId,
+    required: false,
+  },
   createdAt: {
     type: Date,
     required: true,
     default: Date.now,
   },
+});
+
+export interface Project extends Document {
+  title: string;
+  slug: string;
+  prompt: string;
+  isAcceptingMessages: boolean;
+}
+
+const ProjectSchema: Schema<Project> = new mongoose.Schema({
+  title: { type: String, required: true },
+  slug: { type: String, required: true },
+  prompt: { type: String, default: "" },
+  isAcceptingMessages: { type: Boolean, default: true },
 });
 
 export interface User extends Document {
@@ -25,6 +44,8 @@ export interface User extends Document {
   verifyCodeExpiry: Date; 
   isVerified: boolean;
   isAcceptingMessages: boolean;
+  customPrompt?: string;
+  projects: Project[];
   messages: Message[];
 }
 
@@ -62,6 +83,11 @@ const UserSchema: Schema<User> = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  customPrompt: {
+    type: String,
+    default: "",
+  },
+  projects: [ProjectSchema],
   messages: [MessageSchema],
 });
 
