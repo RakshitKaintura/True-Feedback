@@ -255,14 +255,19 @@ function UserDashboard() {
                 <CardDescription>Copy your unique link to receive anonymous feedback.</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center">
-                  <input
-                    type="text"
-                    value={profileUrl}
-                    disabled
-                    className="input input-bordered w-full p-2 mr-2 border rounded-md bg-slate-50 dark:bg-slate-900 dark:border-slate-700 text-sm overflow-hidden text-ellipsis whitespace-nowrap"
-                  />
-                  <Button onClick={copyToClipboard} size="icon" variant="secondary" className="shrink-0 shadow-sm"><Copy className="w-4 h-4"/></Button>
+                <div className="flex flex-col space-y-3">
+                  <div className="flex items-center">
+                    <input
+                      type="text"
+                      value={profileUrl}
+                      disabled
+                      className="input input-bordered w-full p-2 mr-2 border rounded-md bg-slate-50 dark:bg-slate-900 dark:border-slate-700 text-sm overflow-hidden text-ellipsis whitespace-nowrap"
+                    />
+                    <Button onClick={copyToClipboard} size="icon" variant="secondary" className="shrink-0 shadow-sm" title="Copy Feedback Link"><Copy className="w-4 h-4"/></Button>
+                  </div>
+                  <Button variant="outline" className="w-full shadow-sm" onClick={() => window.open(`${profileUrl}/wall`, '_blank')}>
+                     View Public Wall
+                  </Button>
                 </div>
               </CardContent>
             </Card>
