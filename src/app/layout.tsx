@@ -23,7 +23,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <body className={`${inter.className} dark:bg-slate-900 dark:text-white`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
