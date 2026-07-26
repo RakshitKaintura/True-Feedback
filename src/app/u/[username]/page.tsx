@@ -5,9 +5,10 @@ import axios, { AxiosError } from 'axios';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Loader2, Sparkles, Wand2 } from 'lucide-react';
+import { ModeToggle } from '@/components/ModeToggle';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { CardHeader, CardContent, Card } from '@/components/ui/card';
+import { CardHeader, CardContent, Card, CardTitle } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -52,6 +53,9 @@ export default function SendMessage() {
   const [isProfileLoading, setIsProfileLoading] = useState(true);
   const [projectTitle, setProjectTitle] = useState("");
 
+  const [publicMessages, setPublicMessages] = useState<any[]>([]);
+  const [themeColor, setThemeColor] = useState('blue');
+
   const form = useForm<z.infer<typeof messageSchema>>({
     resolver: zodResolver(messageSchema),
     defaultValues: { content: '' },
@@ -74,6 +78,8 @@ export default function SendMessage() {
            setIsAcceptingMessages(response.data.isAcceptingMessages);
            setProjectId(response.data.projectId || null);
            if (response.data.title) setProjectTitle(response.data.title);
+           if (response.data.themeColor) setThemeColor(response.data.themeColor);
+           if (response.data.publicMessages) setPublicMessages(response.data.publicMessages);
            
            // Clear suggested messages if it's a custom project so it doesn't show default AMA questions
            if (response.data.projectId || response.data.prompt !== "Send an anonymous message") {
@@ -132,7 +138,7 @@ export default function SendMessage() {
   const fullBufferRef = useRef(''); 
 
   const fetchPolishedFeedback = async () => {
-    if (!messageContent.trim()) return;
+    if (!messageContent?.trim()) return;
     setIsPolishLoading(true);
     setPolishError(null);
     setPolishedMessage('');
@@ -241,13 +247,28 @@ export default function SendMessage() {
   }
 
   return (
-    <div className="container mx-auto my-8 p-6 bg-white rounded max-w-4xl">
-      <h1 className="text-4xl font-bold mb-6 text-center">
+    <div className="container relative mx-auto my-8 p-6 bg-white dark:bg-slate-950 rounded-lg shadow-lg border-t-4 border-t-primary border-x border-b border-x-slate-200 border-b-slate-200 dark:border-x-slate-800 dark:border-b-slate-800 max-w-4xl transition-colors overflow-hidden">
+      <div className="absolute top-4 right-4">
+        <ModeToggle />
+      </div>
+      {themeColor !== 'blue' && (
+        <style>{`
+          :root {
+            --primary: ${themeColor === 'purple' ? '270 70% 50%' : themeColor === 'rose' ? '340 70% 50%' : '142 70% 40%'};
+            --ring: ${themeColor === 'purple' ? '270 70% 50%' : themeColor === 'rose' ? '340 70% 50%' : '142 70% 40%'};
+          }
+          .dark {
+            --primary: ${themeColor === 'purple' ? '270 60% 60%' : themeColor === 'rose' ? '340 60% 60%' : '142 60% 50%'};
+            --ring: ${themeColor === 'purple' ? '270 60% 60%' : themeColor === 'rose' ? '340 60% 60%' : '142 60% 50%'};
+          }
+        `}</style>
+      )}
+      <h1 className="text-4xl font-extrabold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-br from-primary to-primary/50 py-2">
         {projectTitle ? `Project: ${projectTitle}` : 'Public Profile'}
       </h1>
       
       {!isAcceptingMessages ? (
-         <div className="text-center p-8 bg-red-50 text-red-600 rounded-lg font-medium">
+         <div className="text-center p-8 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg font-medium">
            This user is not currently accepting messages on this board.
          </div>
       ) : (
@@ -259,13 +280,13 @@ export default function SendMessage() {
               name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xl font-medium mb-4 block">
+                  <FormLabel className="text-xl font-semibold mb-4 block text-slate-800 dark:text-slate-200">
                      {customPrompt}
                   </FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder={`Write your anonymous message to @${username} here`}
-                      className="resize-none h-32"
+                      className="resize-none h-32 dark:bg-slate-900"
                       {...field}
                     />
                   </FormControl>
@@ -284,7 +305,7 @@ export default function SendMessage() {
                     onClick={() => fetchSuggestedMessages('templates')}
                     disabled={isSuggestLoading}
                   >
-                    {isSuggestLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                    {isSuggestLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" /> : <Sparkles className="mr-2 h-4 w-4 text-primary" />}
                     Get Sentence Starters
                   </Button>
                   <Button 
@@ -293,7 +314,7 @@ export default function SendMessage() {
                     onClick={fetchPolishedFeedback}
                     disabled={isPolishLoading || !messageContent?.trim()}
                   >
-                    {isPolishLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4" />}
+                    {isPolishLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" /> : <Wand2 className="mr-2 h-4 w-4 text-primary" />}
                     Polish My Feedback
                   </Button>
                 </div>
@@ -324,7 +345,7 @@ export default function SendMessage() {
 
         {/* Polished Feedback Preview Box */}
         {polishedMessage && (
-          <Card className="mt-4 border-primary/50 bg-primary/5">
+          <Card className="mt-4 border-primary/50 bg-primary/5 dark:bg-primary/10">
             <CardHeader className="pb-3">
               <h3 className="text-sm font-medium text-primary flex items-center">
                 <Wand2 className="w-4 h-4 mr-2"/>
@@ -332,7 +353,7 @@ export default function SendMessage() {
               </h3>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-700 mb-4">{polishedMessage}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">{polishedMessage}</p>
               <Button size="sm" onClick={handleApplyPolished}>Apply to Message</Button>
             </CardContent>
           </Card>
@@ -343,10 +364,10 @@ export default function SendMessage() {
       {/* Suggested Messages / Templates */}
       {isAcceptingMessages && suggestedMessages && !isCustomProject && (
       <div className="space-y-4 my-8">
-        <p>Click on any message below to select it.</p>
+        <p className="dark:text-gray-300">Click on any message below to select it.</p>
         <Card>
           <CardHeader>
-            <h3 className="text-xl font-semibold">Messages</h3>
+            <h3 className="text-xl font-semibold text-primary">Messages</h3>
           </CardHeader>
           <CardContent className="flex flex-col space-y-4">
             {suggestError ? (
@@ -356,7 +377,7 @@ export default function SendMessage() {
                 <Button
                   key={index}
                   variant="outline"
-                  className="mb-2 whitespace-normal h-auto text-left"
+                  className="mb-2 whitespace-normal h-auto text-left dark:bg-slate-900"
                   onClick={() => handleMessageClick(message)}
                 >
                   {message}
@@ -370,7 +391,7 @@ export default function SendMessage() {
 
       {isAcceptingMessages && suggestedMessages && isCustomProject && suggestedMessages !== initialMessageString && (
       <div className="space-y-4 mt-8">
-        <p className="text-sm text-gray-500">Click a template below to start your feedback.</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Click a template below to start your feedback.</p>
         <div className="flex flex-col space-y-3">
           {suggestError ? (
              <p className="text-red-500">{suggestError}</p>
@@ -379,7 +400,7 @@ export default function SendMessage() {
                 <Button
                   key={index}
                   variant="outline"
-                  className="whitespace-normal h-auto text-left justify-start"
+                  className="whitespace-normal h-auto text-left justify-start dark:bg-slate-900"
                   onClick={() => handleMessageClick(message)}
                 >
                   {message}
@@ -390,9 +411,20 @@ export default function SendMessage() {
       </div>
       )}
 
+      {/* Public Wall Button */}
+      {publicMessages.length > 0 && (
+        <div className="flex justify-center mt-8 mb-4">
+          <Link href={projectSlug ? `/u/${username}/p/${projectSlug}/wall` : `/u/${username}/wall`}>
+             <Button variant="outline" className="w-full sm:w-auto shadow-sm transition-all hover:-translate-y-0.5">
+                View Public Wall ({publicMessages.length} Messages)
+             </Button>
+          </Link>
+        </div>
+      )}
+
       <Separator className="my-6" />
       <div className="text-center">
-        <div className="mb-4">Get Your Message Board</div>
+        <div className="mb-4 dark:text-gray-300">Get Your Message Board</div>
         <Link href={'/sign-up'}>
           <Button>Create Your Account</Button>
         </Link>

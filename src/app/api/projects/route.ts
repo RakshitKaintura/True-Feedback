@@ -54,7 +54,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { title, prompt } = await request.json();
+    const { title, prompt, themeColor } = await request.json();
 
     if (!title) {
       return Response.json(
@@ -80,6 +80,7 @@ export async function POST(request: Request) {
       slug,
       prompt: prompt || "",
       isAcceptingMessages: true,
+      themeColor: themeColor || 'blue',
     };
 
     const updatedUser = await UserModel.findByIdAndUpdate(

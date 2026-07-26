@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { projectId, prompt, isAcceptingMessages } = await request.json();
+    const { projectId, prompt, isAcceptingMessages, themeColor } = await request.json();
     
     if (projectId) {
       // Update specific project
@@ -24,7 +24,8 @@ export async function POST(request: Request) {
         { 
           $set: { 
             'projects.$.prompt': prompt,
-            'projects.$.isAcceptingMessages': isAcceptingMessages
+            'projects.$.isAcceptingMessages': isAcceptingMessages,
+            'projects.$.themeColor': themeColor || 'blue',
           } 
         },
         { new: true }

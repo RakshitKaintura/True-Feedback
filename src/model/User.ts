@@ -4,6 +4,8 @@ export interface Message extends Document {
   content: string;
   projectId?: mongoose.Types.ObjectId;
   createdAt: Date;
+  reply?: string;
+  isPublic?: boolean;
 }
 
 const MessageSchema: Schema<Message> = new mongoose.Schema({
@@ -14,6 +16,14 @@ const MessageSchema: Schema<Message> = new mongoose.Schema({
   projectId: {
     type: Schema.Types.ObjectId,
     required: false,
+  },
+  reply: {
+    type: String,
+    required: false,
+  },
+  isPublic: {
+    type: Boolean,
+    default: false,
   },
   createdAt: {
     type: Date,
@@ -27,6 +37,7 @@ export interface Project extends Document {
   slug: string;
   prompt: string;
   isAcceptingMessages: boolean;
+  themeColor?: string;
 }
 
 const ProjectSchema: Schema<Project> = new mongoose.Schema({
@@ -34,6 +45,7 @@ const ProjectSchema: Schema<Project> = new mongoose.Schema({
   slug: { type: String, required: true },
   prompt: { type: String, default: "" },
   isAcceptingMessages: { type: Boolean, default: true },
+  themeColor: { type: String, default: 'blue' },
 });
 
 export interface User extends Document {
@@ -47,6 +59,7 @@ export interface User extends Document {
   customPrompt?: string;
   projects: Project[];
   messages: Message[];
+  isOAuth?: boolean;
 }
 
 // Updated User schema
@@ -65,15 +78,19 @@ const UserSchema: Schema<User> = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
+    required: [function(this: any) { return !this.isOAuth; }, 'Password is required'],
   },
   verifyCode: {
     type: String,
-    required: [true, 'Verify Code is required'],
+    required: [function(this: any) { return !this.isOAuth; }, 'Verify Code is required'],
   },
   verifyCodeExpiry: {
     type: Date,
-    required: [true, 'Verify Code Expiry is required'],
+    required: [function(this: any) { return !this.isOAuth; }, 'Verify Code Expiry is required'],
+  },
+  isOAuth: {
+    type: Boolean,
+    default: false,
   },
   isVerified: {
     type: Boolean,

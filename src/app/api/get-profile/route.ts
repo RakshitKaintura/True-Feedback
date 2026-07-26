@@ -34,6 +34,10 @@ export async function GET(request: Request) {
         );
       }
 
+      const publicMessages = user.messages
+        .filter((m) => m.isPublic && m.projectId?.toString() === project._id.toString())
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
       return Response.json(
         {
           success: true,
@@ -41,16 +45,23 @@ export async function GET(request: Request) {
           isAcceptingMessages: project.isAcceptingMessages,
           title: project.title,
           projectId: project._id,
+          themeColor: project.themeColor || 'blue',
+          publicMessages,
         },
         { status: 200 }
       );
     } else {
       // General profile
+      const publicMessages = user.messages
+        .filter((m) => m.isPublic && !m.projectId)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
       return Response.json(
         {
           success: true,
           prompt: user.customPrompt || '',
           isAcceptingMessages: user.isAcceptingMessages,
+          publicMessages,
         },
         { status: 200 }
       );

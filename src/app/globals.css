@@ -1,1 +1,21 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-ring: hsl(var(--ring));
+}
+
+:root {
+  --primary: 222.2 47.4% 11.2%; /* slate-900 */
+  --primary-foreground: 210 40% 98%; /* slate-50 */
+  --ring: 222.2 84% 4.9%;
+}
+
+.dark {
+  --primary: 210 40% 98%; /* slate-50 */
+  --primary-foreground: 222.2 47.4% 11.2%; /* slate-900 */
+  --ring: 212.7 26.8% 83.9%;
+}
