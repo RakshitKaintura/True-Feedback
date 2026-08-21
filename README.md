@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# True Feedback
 
-## Getting Started
+> **Dive into the World of True Feedback - Where your identity remains a secret.**
 
-First, run the development server:
+True Feedback is a modern web application that allows users to receive anonymous messages and feedback from others. Built with privacy and ease-of-use in mind, it provides a secure platform to hear what people really think.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Anonymous Messaging**: Receive honest, unfiltered feedback through your unique public profile link.
+- **AI-Powered**: Integrates Google AI SDK to intelligently process or suggest responses.
+- **Secure Authentication**: Robust user authentication powered by NextAuth.js.
+- **Email Notifications**: Seamless email delivery using Resend and React Email.
+- **Modern UI/UX**: Designed with Tailwind CSS and Shadcn UI for a beautiful, responsive, and accessible user interface.
+- **Dark Mode**: Fully supports light and dark themes using `next-themes`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Framework**: [Next.js](https://nextjs.org/) (App Router)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [Shadcn UI](https://ui.shadcn.com/)
+- **Database**: [MongoDB](https://www.mongodb.com/) (via [Mongoose](https://mongoosejs.com/))
+- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
+- **Email**: [Resend](https://resend.com/) & [React Email](https://react.email/)
+- **AI Integration**: [Google AI SDK](https://sdk.vercel.ai/docs/providers/google)
+- **Validation**: [Zod](https://zod.dev/) & [React Hook Form](https://react-hook-form.com/)
 
-## Learn More
+## 💻 Getting Started
 
-To learn more about Next.js, take a look at the following resources:
+### Prerequisites
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Ensure you have [Node.js](https://nodejs.org/) and npm (or pnpm/yarn) installed on your machine.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Installation
 
-## Deploy on Vercel
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd anonymous_feedback
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Install the dependencies:
+   ```bash
+   npm install
+   # or yarn / pnpm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Set up the environment variables:
+   Create a `.env` file in the root directory and add the necessary variables (e.g., MongoDB URI, NextAuth secret, Resend API key, Google AI keys).
+
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## 📁 Project Structure
+
+- `src/app`: Contains the Next.js App Router pages and API routes.
+  - `(app)`: Main application pages (dashboard, etc.).
+  - `(auth)`: Authentication pages (sign-in, sign-up).
+  - `u/[username]`: Public profile pages for receiving feedback.
+  - `api`: Backend API endpoints.
+- `src/components`: Reusable UI components (including Shadcn UI).
+- `src/schemas`: Zod schemas for form and API validation.
+- `emails`: React Email templates.
+
+## 📜 License
+
+© 2023 True Feedback. All rights reserved.
